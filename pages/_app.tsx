@@ -13,6 +13,9 @@ import 'styles/notion.css'
 // global style overrides for prism theme (optional)
 import 'styles/prism-theme.css'
 
+import * as React from 'react'
+import * as Fathom from 'fathom-client'
+import * as ReactGA from 'react-ga'
 import type { AppProps } from 'next/app'
 import * as Fathom from 'fathom-client'
 import { useRouter } from 'next/router'
@@ -22,11 +25,10 @@ import * as React from 'react'
 import { bootstrap } from '@/lib/bootstrap-client'
 import {
   fathomConfig,
-  fathomId,
-  isServer,
+  posthogId,
   posthogConfig,
-  posthogId
-} from '@/lib/config'
+  googleId
+} from 'lib/config'
 
 if (!isServer) {
   bootstrap()
@@ -53,6 +55,12 @@ export default function App({ Component, pageProps }: AppProps) {
     if (posthogId) {
       posthog.init(posthogId, posthogConfig)
     }
+
+    if (googleId) {
+      ReactGA.initialize(googleId);
+      ReactGA.pageview(window.location.pathname + window.location.search);
+    }
+
 
     router.events.on('routeChangeComplete', onRouteChangeComplete)
 
