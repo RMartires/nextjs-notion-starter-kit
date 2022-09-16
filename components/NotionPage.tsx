@@ -29,6 +29,9 @@ import { NotionPageHeader } from './NotionPageHeader'
 import { Page404 } from './Page404'
 import { PageAside } from './PageAside'
 import { PageHead } from './PageHead'
+import { NotionPageHeader } from './NotionPageHeader'
+// import { GitHubShareButton } from './GitHubShareButton'
+
 import styles from './styles.module.css'
 
 // -----------------------------------------------------------------------------
@@ -328,7 +331,7 @@ export function NotionPage({
         footer={footer}
       />
 
-      <GitHubShareButton />
+      {/* <GitHubShareButton /> */}
     </>
   )
 }
