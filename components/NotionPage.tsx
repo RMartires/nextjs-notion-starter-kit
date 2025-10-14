@@ -1,6 +1,6 @@
 import cs from 'classnames'
 import dynamic from 'next/dynamic'
-import Image from 'next/legacy/image'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { type PageBlock } from 'notion-types'
@@ -12,7 +12,7 @@ import {
   NotionRenderer,
   useNotionContext
 } from 'react-notion-x'
-import { EmbeddedTweet, TweetNotFound, TweetSkeleton } from 'react-tweet'
+import TweetEmbed from 'react-tweet-embed'
 import { useSearchParam } from 'react-use'
 
 import type * as types from '@/lib/types'
@@ -29,7 +29,6 @@ import { NotionPageHeader } from './NotionPageHeader'
 import { Page404 } from './Page404'
 import { PageAside } from './PageAside'
 import { PageHead } from './PageHead'
-import { NotionPageHeader } from './NotionPageHeader'
 // import { GitHubShareButton } from './GitHubShareButton'
 
 import styles from './styles.module.css'
@@ -138,10 +137,19 @@ function Tweet({ id }: { id: string }) {
   const { recordMap } = useNotionContext()
   const tweet = (recordMap as types.ExtendedTweetRecordMap)?.tweets?.[id]
 
+  if (!tweet?.html) {
+    return (
+      <div style={{ padding: '1rem', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
+        Tweet not found or failed to load
+      </div>
+    )
+  }
+
   return (
-    <React.Suspense fallback={<TweetSkeleton />}>
-      {tweet ? <EmbeddedTweet tweet={tweet} /> : <TweetNotFound />}
-    </React.Suspense>
+    <div
+      dangerouslySetInnerHTML={{ __html: tweet.html }}
+      style={{ display: 'flex', justifyContent: 'center' }}
+    />
   )
 }
 
@@ -197,7 +205,7 @@ export function NotionPage({
 
   const components = React.useMemo<Partial<NotionComponents>>(
     () => ({
-      nextLegacyImage: Image,
+      nextImage: Image,
       nextLink: Link,
       Code,
       Collection,

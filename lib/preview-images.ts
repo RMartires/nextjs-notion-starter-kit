@@ -1,4 +1,4 @@
-import ky from 'ky'
+import fetch from 'isomorphic-unfetch'
 import lqip from 'lqip-modern'
 import {
   type ExtendedRecordMap,
@@ -53,7 +53,8 @@ async function createPreviewImage(
       console.warn(`redis error get "${cacheKey}"`, err.message)
     }
 
-    const body = await ky(url).arrayBuffer()
+    const response = await fetch(url)
+    const body = await response.arrayBuffer()
     const result = await lqip(body)
     console.log('lqip', { ...result.metadata, url, cacheKey })
 

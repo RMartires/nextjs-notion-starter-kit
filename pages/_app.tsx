@@ -13,8 +13,6 @@ import 'styles/notion.css'
 // global style overrides for prism theme (optional)
 import 'styles/prism-theme.css'
 
-import * as React from 'react'
-import * as Fathom from 'fathom-client'
 import ReactGA from "react-ga4"
 import type { AppProps } from 'next/app'
 import * as Fathom from 'fathom-client'
@@ -30,6 +28,8 @@ import {
   googleId
 } from 'lib/config'
 
+const isServer = typeof window === 'undefined'
+
 if (!isServer) {
   bootstrap()
 }
@@ -39,18 +39,18 @@ export default function App({ Component, pageProps }: AppProps) {
 
   React.useEffect(() => {
     function onRouteChangeComplete() {
-      if (fathomId) {
-        Fathom.trackPageview()
-      }
+      // if (fathomId) {
+      //   Fathom.trackPageview()
+      // }
 
       if (posthogId) {
         posthog.capture('$pageview')
       }
     }
 
-    if (fathomId) {
-      Fathom.load(fathomId, fathomConfig)
-    }
+    // if (fathomId) {
+    //   Fathom.load(fathomId, fathomConfig)
+    // }
 
     if (posthogId) {
       posthog.init(posthogId, posthogConfig)

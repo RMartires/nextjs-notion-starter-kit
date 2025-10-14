@@ -1,11 +1,52 @@
-import { type ExtendedRecordMap } from 'notion-types'
-import { getPageTweetIds } from 'notion-utils'
+import { type ExtendedRecordMap, type Block } from 'notion-types'
 import pMap from 'p-map'
 import pMemoize from 'p-memoize'
-import { getTweet as getTweetData } from 'react-tweet/api'
+import fetch from 'isomorphic-unfetch'
 
 import type { ExtendedTweetRecordMap } from './types'
 import { db } from './db'
+
+function getPageTweetIds(recordMap: ExtendedRecordMap): string[] {
+  const tweetIds = new Set<string>()
+
+  // Search for tweet blocks
+  Object.values(recordMap.block).forEach(({ value: block }) => {
+    if (!block) return
+
+    if (block.type === 'tweet') {
+      const src = block.properties?.source?.[0]?.[0]
+      if (!src) return
+
+      // Extract tweet ID from URL
+      const match = src.match(/https:\/\/twitter\.com\/\w+\/status\/(\d+)/)
+      if (match) {
+        tweetIds.add(match[1])
+      }
+    }
+  })
+
+  return Array.from(tweetIds)
+}
+
+async function getTweetData(tweetId: string) {
+  try {
+    const response = await fetch(
+      `https://publish.twitter.com/oembed?url=https://twitter.com/i/status/${tweetId}`
+    )
+    if (!response.ok) return null
+    const data = await response.json()
+    return {
+      id: tweetId,
+      html: data.html,
+      author_name: data.author_name,
+      author_url: data.author_url,
+      text: data.text
+    }
+  } catch (err) {
+    console.warn('Error fetching tweet data:', err)
+    return null
+  }
+}
 
 export async function getTweetsMap(
   recordMap: ExtendedRecordMap
