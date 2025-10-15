@@ -288,7 +288,10 @@ export function NotionPage({
     ? undefined
     : getCanonicalPageUrl(site, recordMap)(pageId)
 
+  const signedUrl = (recordMap.signed_urls && recordMap.signed_urls[pageId as string]) ? recordMap.signed_urls[pageId as string] : undefined;
+
   const socialImage = mapImageUrl(
+    signedUrl ||
     getPageProperty<string>('Social Image', block, recordMap) ||
       (block as PageBlock).format?.page_cover ||
       config.defaultPageCover,
@@ -330,10 +333,10 @@ export function NotionPage({
         showTableOfContents={showTableOfContents}
         minTableOfContentsItems={minTableOfContentsItems}
         defaultPageIcon={config.defaultPageIcon}
-        defaultPageCover={config.defaultPageCover}
+        defaultPageCover={signedUrl}
         defaultPageCoverPosition={config.defaultPageCoverPosition}
         mapPageUrl={siteMapPageUrl}
-        mapImageUrl={mapImageUrl}
+        // mapImageUrl={mapImageUrl}
         searchNotion={config.isSearchEnabled ? searchNotion : undefined}
         pageAside={pageAside}
         footer={footer}
