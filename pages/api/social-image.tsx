@@ -1,6 +1,6 @@
 import ky from 'ky'
 import { type NextApiRequest, type NextApiResponse } from 'next'
-import { ImageResponse } from 'next/og'
+import { ImageResponse } from '@vercel/og'
 import { type PageBlock } from 'notion-types'
 import {
   getBlockIcon,
@@ -15,8 +15,6 @@ import interSemiBoldFont from '@/lib/fonts/inter-semibold'
 import { mapImageUrl } from '@/lib/map-image-url'
 import { notion } from '@/lib/notion-api'
 import { type NotionPageInfo, type PageError } from '@/lib/types'
-
-export const runtime = 'edge'
 
 export default async function OGImage(
   req: NextApiRequest,

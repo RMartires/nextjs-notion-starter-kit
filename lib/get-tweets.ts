@@ -19,7 +19,7 @@ function getPageTweetIds(recordMap: ExtendedRecordMap): string[] {
 
       // Extract tweet ID from URL
       const match = src.match(/https:\/\/twitter\.com\/\w+\/status\/(\d+)/)
-      if (match) {
+      if (match && match[1]) {
         tweetIds.add(match[1])
       }
     }

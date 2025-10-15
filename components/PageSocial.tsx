@@ -12,7 +12,7 @@ interface SocialLink {
   href?: string
 }
 
-const socialLinks: SocialLink[] = [
+const socialLinks = [
   config.twitter && {
     name: 'twitter',
     href: `https://twitter.com/${config.twitter}`,
@@ -67,7 +67,7 @@ const socialLinks: SocialLink[] = [
       </svg>
     )
   }
-].filter(Boolean)
+].filter(Boolean) as SocialLink[]
 
 export function PageSocial() {
   return (

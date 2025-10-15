@@ -19,8 +19,8 @@ export async function getPreviewImageMap(
   const urls: string[] = getPageImageUrls(recordMap, {
     mapImageUrl
   })
-    .concat([defaultPageIcon, defaultPageCover].filter(Boolean))
-    .filter(Boolean)
+    .concat([defaultPageIcon, defaultPageCover].filter((url): url is string => typeof url === 'string'))
+    .filter((url): url is string => typeof url === 'string')
 
   const previewImagesMap = Object.fromEntries(
     await pMap(
@@ -54,14 +54,15 @@ async function createPreviewImage(
     }
 
     const response = await fetch(url)
-    const body = await response.arrayBuffer()
-    const result = await lqip(body)
+    const arrayBuffer = await response.arrayBuffer()
+    const buffer = Buffer.from(arrayBuffer)
+    const result = await lqip(buffer)
     console.log('lqip', { ...result.metadata, url, cacheKey })
 
     const previewImage = {
       originalWidth: result.metadata.originalWidth,
       originalHeight: result.metadata.originalHeight,
-      dataURIBase64: result.metadata.dataURIBase64
+      dataURIBase64: result.content
     }
 
     try {
